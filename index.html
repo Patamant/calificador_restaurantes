@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FINAV · Matriz de Evaluación de Restaurantes</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- ============ LOGIN ============ -->
+  <section id="view-login" class="view login">
+    <div class="login-card">
+      <img src="assets/logo.png" alt="FINAV Financial Advisor" class="login-logo">
+      <h1>Matriz de Evaluación de Restaurantes</h1>
+      <p class="muted">Diagnóstico para la adquisición y continuidad operativa</p>
+      <form id="login-form" autocomplete="off">
+        <label for="login-key">Clave de acceso</label>
+        <input id="login-key" type="password" required placeholder="Ingrese la clave proporcionada">
+        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+        <p id="login-error" class="error" hidden></p>
+      </form>
+      <p id="demo-note" class="demo-note" hidden>Modo demostración: la API no está configurada. Los datos se guardan solo en este navegador (ingrese cualquier clave).</p>
+    </div>
+  </section>
+
+  <!-- ============ APP ============ -->
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="brand" id="go-home" title="Inicio">
+        <img src="assets/logo.png" alt="FINAV">
+        <div><strong>Matriz de Evaluación</strong><span>Adquisición de restaurantes</span></div>
+      </div>
+      <div class="topbar-actions">
+        <span id="demo-badge" class="badge badge-gold" hidden>DEMO</span>
+        <button class="btn btn-ghost" id="btn-home">Evaluaciones</button>
+        <button class="btn btn-ghost" id="btn-logout">Salir</button>
+      </div>
+    </header>
+
+    <!-- ===== Lista ===== -->
+    <main id="view-home" class="view container">
+      <div class="page-head">
+        <div>
+          <h2>Evaluaciones registradas</h2>
+          <p class="muted">Abra una evaluación para continuar, ver su dashboard o descargar el informe.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-new">+ Nueva evaluación</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="table" id="eval-list">
+            <thead><tr><th>Restaurante</th><th>Fecha</th><th>Evaluador</th><th>Estado</th><th>Índice adq.</th><th>Dictamen adquisición</th><th>Actualizado</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p id="eval-empty" class="empty" hidden>Aún no hay evaluaciones. Cree la primera con <b>+ Nueva evaluación</b>.</p>
+      </div>
+    </main>
+
+    <!-- ===== Evaluación ===== -->
+    <main id="view-eval" class="view container" hidden>
+      <div class="eval-head">
+        <div>
+          <h2 id="eval-title">Nueva evaluación</h2>
+          <p class="muted" id="eval-sub">Sin guardar</p>
+        </div>
+        <div class="eval-head-actions">
+          <span id="save-state" class="save-state"></span>
+          <button class="btn btn-outline" id="btn-save">Guardar</button>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+        <span id="progress-text">0 de 0 ítems</span>
+      </div>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="datos">1. Datos generales</button>
+        <button class="tab" data-tab="calificacion">2. Calificación</button>
+        <button class="tab" data-tab="dashboard">3. Dashboard y plan de acción</button>
+      </nav>
+
+      <!-- Datos generales -->
+      <section class="tab-panel" id="tab-datos">
+        <div class="card">
+          <form id="form-datos" class="grid-form">
+            <div class="field span-2"><label>Nombre del restaurante *</label><input name="restaurante" required></div>
+            <div class="field span-2"><label>Dirección</label><input name="direccion"></div>
+            <div class="field"><label>Ciudad</label><input name="ciudad"></div>
+            <div class="field"><label>Propietario / vendedor</label><input name="propietario"></div>
+            <div class="field"><label>Fecha de evaluación</label><input name="fecha" type="date"></div>
+            <div class="field"><label>Evaluador(es)</label><input name="evaluador"></div>
+            <div class="field"><label>Precio de compra ofertado (USD)</label><input name="precio" type="number" min="0" step="0.01"></div>
+            <div class="field span-4"><label>Conclusiones y recomendaciones del evaluador (aparecen en el informe)</label><textarea name="conclusiones" rows="4"></textarea></div>
+          </form>
+          <div class="form-foot"><button class="btn btn-primary" data-goto="calificacion">Continuar a la calificación →</button></div>
+        </div>
+        <div class="card scale-card">
+          <h3>Escala de calificación</h3>
+          <div class="scale">
+            <div><b class="r5">5</b> Excelente: óptimo, sin intervención.</div>
+            <div><b class="r4">4</b> Bueno: desgaste menor, funciona bien.</div>
+            <div><b class="r3">3</b> Regular: funciona con limitaciones.</div>
+            <div><b class="r2">2</b> Deficiente: fallas o incumplimiento relevante.</div>
+            <div><b class="r1">1</b> Crítico: no funciona, no existe o incumple.</div>
+            <div><b class="rna">N/A</b> No aplica: se excluye del cálculo.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Calificación -->
+      <section class="tab-panel" id="tab-calificacion" hidden>
+        <div class="rate-layout">
+          <aside class="cat-nav card" id="cat-nav"></aside>
+          <div>
+            <div class="rate-toolbar">
+              <h3 id="cat-title"></h3>
+              <label class="check"><input type="checkbox" id="only-pending"> Solo pendientes</label>
+            </div>
+            <div id="item-list"></div>
+            <div class="rate-foot">
+              <button class="btn btn-outline" id="btn-prev-cat">← Categoría anterior</button>
+              <button class="btn btn-primary" id="btn-next-cat">Siguiente categoría →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard -->
+      <section class="tab-panel" id="tab-dashboard" hidden>
+        <div class="dash-actions">
+          <button class="btn btn-outline" id="btn-save-2">Guardar</button>
+          <button class="btn btn-gold" id="btn-finalize">Finalizar evaluación</button>
+          <button class="btn btn-primary" id="btn-pdf">Descargar informe PDF</button>
+        </div>
+        <div class="dictamen-grid">
+          <div class="dictamen" id="dict-adq"><span>Dictamen de adquisición</span><strong></strong><em></em></div>
+          <div class="dictamen" id="dict-op"><span>Dictamen operativo</span><strong></strong><em></em></div>
+        </div>
+        <div class="kpis" id="kpis"></div>
+        <div class="chart-grid">
+          <div class="card"><h3>Índice de condición por categoría</h3><div class="chart-box tall"><canvas id="chart-cat"></canvas></div></div>
+          <div class="card"><h3>Ítems por prioridad</h3><div class="chart-box"><canvas id="chart-prio"></canvas></div></div>
+        </div>
+        <div class="card">
+          <h3>Resultados por categoría</h3>
+          <div class="table-wrap"><table class="table" id="cat-table"></table></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Plan de acción priorizado</h3><span class="muted" id="plan-count"></span></div>
+          <p class="muted small">Asigne responsable, fecha y estado; luego guarde. Se incluyen ítems de prioridad Crítica, Alta y Media.<br>
+            <b class="pre">PRE-CIERRE</b>: condición para firmar (exigir al vendedor o descontar del precio) · <b>NEGOCIACIÓN</b>: ajuste de precio o retención en garantía · <b>POST-CIERRE</b>: corregir después de la compra.</p>
+          <div class="table-wrap"><table class="table plan" id="plan-table"></table></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <div id="overlay" class="overlay" hidden><div class="spinner"></div><p id="overlay-text">Procesando…</p></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/catalog-demo.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/report.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
